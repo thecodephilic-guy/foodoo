@@ -1,0 +1,29 @@
+{
+  "name": "foodoo",
+  "version": "1.0.0",
+  "description": "Just another food delivery application",
+  "keywords": [
+    "react.js",
+    "node.js",
+    "javascript",
+    "food-delivery-app"
+  ],
+  "license": "ISC",
+  "author": "sohailAnsari",
+  "type": "module",
+  "source": "index.html",
+  "scripts": {
+    "test": "jest",
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "devDependencies": {
+    "parcel": "^2.15.4"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tailwindcss": "^4.1.11"
+  }
+}
