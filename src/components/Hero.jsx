@@ -3,6 +3,9 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
 import HeroCard from "./HeroCard";
+import { Locate } from "lucide-react";
+import useGeolocation from "../hooks/useGeolocation";
+import getCityFromCoordinates from "../utils/getCityFromCoordinates";
 
 function Hero() {
   const listOfPopularCities = [
@@ -22,7 +25,11 @@ function Hero() {
 
   const [centerIndex, setCenterIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [currentCity, setCurrentCity] = useState("");
   const intervalRef = useRef(null);
+  const [locationData, setLocationData] = useState([]);
+
+  const { location, getGeolocation } = useGeolocation();
 
   const startAutoRotate = () => {
     intervalRef.current = setInterval(() => {
@@ -49,6 +56,32 @@ function Hero() {
     return { scale: 0.7, x: 0, zIndex: 1 };
   };
 
+  const handleLocationClick = async () => {
+    if (!locationData) {
+      getGeolocation();
+      if (location) {
+        const cityInfo = await getCityFromCoordinates(
+          location.latitude,
+          location.longitude
+        );
+        setLocationData(cityInfo?.results[0]?.components);
+        setCurrentCity(cityInfo?.results[0]?.components?.city);
+        return;
+      }
+    } else {
+      setCurrentCity(locationData.city);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    e.preventDefault();
+    setCurrentCity(e.target.value);
+  };
+
+  const handlePopularCities = (city) => {
+    setCurrentCity(city);
+  };
+
   return (
     <section id="Hero" className="w-full flex flex-col md:flex-row">
       <section className="md:w-1/2 flex flex-col justify-center px-6 py-8">
@@ -65,22 +98,29 @@ function Hero() {
           covered.
         </p>
         <div className="flex space-x-4 py-6">
-          <Input
-            type="text"
-            placeholder="Delivery location"
-            className="text-xs md:text-sm"
-          />
+          <div className="relative w-full">
+            <Input
+              value={currentCity}
+              onChange={(e) => handleInputChange(e)}
+              type="text"
+              placeholder="Delivery location"
+              className="text-xs md:text-sm pr-10"
+            />
+            <Button
+              onClick={handleLocationClick}
+              variant="ghost"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground"
+            >
+              <Locate />
+            </Button>
+          </div>
           <Button variant="secondary">Get Started</Button>
         </div>
         <span className="text-xs">Popular cities in India</span>
         <div className="flex space-x-4 md:space-x-6 py-2 flex-wrap">
           {listOfPopularCities.map((city, index) => (
             <Button
-              onClick={() => {
-                console.log(
-                  "Write logic to set the city name inside input box"
-                );
-              }}
+              onClick={() => handlePopularCities(city)}
               variant="link"
               key={index}
               className={`p-0 text-sm ${
