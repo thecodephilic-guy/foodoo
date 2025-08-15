@@ -3,9 +3,8 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
 import HeroCard from "./HeroCard";
-import { Locate } from "lucide-react";
+import { Locate, Loader } from "lucide-react";
 import useGeolocation from "../hooks/useGeolocation";
-import getCityFromCoordinates from "../utils/getCityFromCoordinates";
 
 function Hero() {
   const listOfPopularCities = [
@@ -27,9 +26,9 @@ function Hero() {
   const [isHovered, setIsHovered] = useState(false);
   const [currentCity, setCurrentCity] = useState("");
   const intervalRef = useRef(null);
-  const [locationData, setLocationData] = useState([]);
 
-  const { location, getGeolocation } = useGeolocation();
+  const { locationData, getGeolocation, isLocationLoading, error } =
+    useGeolocation();
 
   const startAutoRotate = () => {
     intervalRef.current = setInterval(() => {
@@ -46,6 +45,11 @@ function Hero() {
     return () => stopAutoRotate();
   }, [images.length]);
 
+  useEffect(() => {
+    if(!locationData) return
+    setCurrentCity(locationData.city);
+  }, [locationData]);
+
   const getPosition = (i) => {
     const position = (i - centerIndex + images.length) % images.length;
     if (position === 0) {
@@ -57,20 +61,7 @@ function Hero() {
   };
 
   const handleLocationClick = async () => {
-    if (!locationData) {
-      getGeolocation();
-      if (location) {
-        const cityInfo = await getCityFromCoordinates(
-          location.latitude,
-          location.longitude
-        );
-        setLocationData(cityInfo?.results[0]?.components);
-        setCurrentCity(cityInfo?.results[0]?.components?.city);
-        return;
-      }
-    } else {
-      setCurrentCity(locationData.city);
-    }
+    getGeolocation();
   };
 
   const handleInputChange = (e) => {
@@ -109,9 +100,9 @@ function Hero() {
             <Button
               onClick={handleLocationClick}
               variant="ghost"
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground cursor-pointer"
             >
-              <Locate />
+              {isLocationLoading ? <Loader /> : <Locate />}
             </Button>
           </div>
           <Button variant="secondary">Get Started</Button>
