@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ShoppingCart } from "lucide-react";
 import { Logo } from "../assets/Logo";
 import { Button } from "./ui/button";
+import { NavLink } from "react-router";
 
 function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -23,14 +24,25 @@ function Header() {
     >
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="w-32">
+          <NavLink to='/'>
+            <div className="w-32">
             <Logo />
           </div>
+          </NavLink>
 
           <div className="flex items-center space-x-8">
-            <Button className={`cursor-pointer hover:bg-transparent`} variant="ghost" size="icon"><ShoppingCart /></Button>
-            <Button className={`cursor-pointer`} variant="secondary" onClick={() => {console.log("clicked");
-            }}>Sign in</Button>
+            <Button
+              className={`hover:bg-transparent transform hover:scale-125`}
+              variant="ghost"
+              size="icon"
+            >
+              <NavLink to="/cart" end>
+                <ShoppingCart />
+              </NavLink>
+            </Button>
+            <Button variant="secondary">
+              <NavLink to="/signup">Sign in</NavLink>
+            </Button>
           </div>
         </div>
       </div>

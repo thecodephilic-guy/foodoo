@@ -27,7 +27,7 @@ function Hero() {
   const [currentCity, setCurrentCity] = useState("");
   const intervalRef = useRef(null);
 
-  const { locationData, getGeolocation, isLocationLoading, error } =
+  const { locationData, getGeolocation, isLocationLoading, getCoordinatesFromCity, locationCoordinates } =
     useGeolocation();
 
   const startAutoRotate = () => {
@@ -35,7 +35,7 @@ function Hero() {
       setCenterIndex((prev) => (prev + 1) % images.length);
     }, 3000);
   };
-
+  
   const stopAutoRotate = () => {
     clearInterval(intervalRef.current);
   };
@@ -49,6 +49,20 @@ function Hero() {
     if(!locationData) return
     setCurrentCity(locationData.city);
   }, [locationData]);
+
+  //make API call on load of the page (default location coordinates):
+  useEffect(() => {
+    fetchData();
+  }, [locationCoordinates]);
+
+  const fetchData = async () => {
+    const url = `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${locationCoordinates.latitude}&lng=${locationCoordinates.longitude}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`;
+    const corsByPassedUrl = "https://thingproxy-760k.onrender.com/fetch/" + url;
+
+    const response = await fetch(corsByPassedUrl);
+    const data = await response.json();
+    console.log(data);
+  }
 
   const getPosition = (i) => {
     const position = (i - centerIndex + images.length) % images.length;
@@ -71,7 +85,13 @@ function Hero() {
 
   const handlePopularCities = (city) => {
     setCurrentCity(city);
+    getCoordinatesFromCity(city);
   };
+
+  const handleGetStarted =  () => {
+    if(currentCity.length > 0) getCoordinatesFromCity(currentCity);
+    if(!currentCity) alert("Enter a city name!");        
+  }
 
   return (
     <section id="Hero" className="w-full flex flex-col md:flex-row">
@@ -94,7 +114,7 @@ function Hero() {
               value={currentCity}
               onChange={(e) => handleInputChange(e)}
               type="text"
-              placeholder="Delivery location"
+              placeholder="Enter Your City"
               className="text-xs md:text-sm pr-10"
             />
             <Button
@@ -105,7 +125,7 @@ function Hero() {
               {isLocationLoading ? <Loader /> : <Locate />}
             </Button>
           </div>
-          <Button variant="secondary">Get Started</Button>
+          <Button onClick={handleGetStarted} variant="secondary">Get Started</Button>
         </div>
         <span className="text-xs">Popular cities in India</span>
         <div className="flex space-x-4 md:space-x-6 py-2 flex-wrap">
