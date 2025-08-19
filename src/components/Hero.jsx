@@ -27,7 +27,7 @@ function Hero() {
   const [currentCity, setCurrentCity] = useState("");
   const intervalRef = useRef(null);
 
-  const { locationData, getGeolocation, isLocationLoading, getCoordinatesFromCity, locationCoordinates } =
+  const { locationData, getGeolocation, isLocationLoading, getCoordinatesFromCity } =
     useGeolocation();
 
   const startAutoRotate = () => {
@@ -49,20 +49,6 @@ function Hero() {
     if(!locationData) return
     setCurrentCity(locationData.city);
   }, [locationData]);
-
-  //make API call on load of the page (default location coordinates):
-  useEffect(() => {
-    fetchData();
-  }, [locationCoordinates]);
-
-  const fetchData = async () => {
-    const url = `https://www.swiggy.com/dapi/restaurants/list/v5?lat=${locationCoordinates.latitude}&lng=${locationCoordinates.longitude}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`;
-    const corsByPassedUrl = "https://thingproxy-760k.onrender.com/fetch/" + url;
-
-    const response = await fetch(corsByPassedUrl);
-    const data = await response.json();
-    console.log(data);
-  }
 
   const getPosition = (i) => {
     const position = (i - centerIndex + images.length) % images.length;

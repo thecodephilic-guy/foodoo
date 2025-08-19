@@ -17,8 +17,8 @@
   --primary-950: hsl(27 97 3);
   --background: var(--primary-50);
   --foreground: var(--primary-950);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card: var(--primary-100);
+  --card-foreground: var(--primary-950);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: var(--primary-500);

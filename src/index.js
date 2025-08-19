@@ -25,7 +25,7 @@ const appRouter = createBrowserRouter([
                 element: <Cart />
             }
         ],
-        errorElement: <Error />
+        // errorElement: <Error />
     }
 ])
 
