@@ -80,7 +80,7 @@ function Hero() {
   }
 
   return (
-    <section id="Hero" className="w-full flex flex-col md:flex-row">
+    <section id="Hero" className="w-full flex flex-col md:flex-row border-b border-primary-200">
       <section className="md:w-1/2 flex flex-col justify-center px-6 py-8">
         <h1 className="text-3xl md:text-5xl text-primary-950 md:leading-normal md:tracking-wide">
           Premium <span className="text-primary">quality</span>
